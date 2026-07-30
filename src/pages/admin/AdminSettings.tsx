@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Save, Loader2, Settings as SettingsIcon, MapPin, Clock, Building2 } from 'lucide-react';
+import { Save, Loader2, Building2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Settings } from '@/types';
 import { PageTitle, LoadingState, Toast } from '@/components/ui';

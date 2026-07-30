@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
-  CalendarCheck, Search, Eye, X, Check, DoorOpen, LogOut, Banknote,
+  CalendarCheck, Search, Eye, Check, DoorOpen, LogOut, Banknote,
   Ban, Loader2,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';

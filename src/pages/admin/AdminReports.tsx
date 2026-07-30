@@ -62,7 +62,7 @@ export default function AdminReports() {
       </div>
 
       <div key={tab} className="animate-fade-up">
-      {tab === 'daily' && <DailyReport bookings={bookings} date={reportDate} setDate={setReportDate} roomCount={roomCount} />}
+      {tab === 'daily' && <DailyReport bookings={bookings} date={reportDate} setDate={setReportDate} />}
       {tab === 'revenue' && <RevenueReport bookings={bookings} />}
       {tab === 'booking' && <BookingReport bookings={bookings} />}
       {tab === 'occupancy' && <OccupancyReport bookings={bookings} roomCount={roomCount} />}
@@ -80,7 +80,7 @@ function ReportActions({ onPrint, title }: { onPrint: () => void; title: string 
   );
 }
 
-function DailyReport({ bookings, date, setDate, roomCount }: { bookings: Booking[]; date: string; setDate: (d: string) => void; roomCount: number }) {
+function DailyReport({ bookings, date, setDate }: { bookings: Booking[]; date: string; setDate: (d: string) => void }) {
   const dayBookings = bookings.filter((b) => b.created_at.startsWith(date));
   const arrivals = bookings.filter((b) => b.check_in === date && b.status !== 'cancelled');
   const departures = bookings.filter((b) => b.check_out === date && b.status !== 'cancelled');

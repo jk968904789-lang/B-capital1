@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Plus, Shield, Loader2, Power, Trash2, Search, UserCog } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';
 import type { StaffProfile } from '@/types';
 import { formatDate } from '@/lib/format';
 import { PageTitle, EmptyState, Modal, ConfirmDialog, Toast } from '@/components/ui';
 
-const EDGE_URL = `${(import.meta.env.VITE_SUPABASE_URL as string).replace(/\/$/, '')}/functions/v1/staff-admin`;
+const SUPA_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? '';
+const EDGE_URL = SUPA_URL ? `${SUPA_URL.replace(/\/$/, '')}/functions/v1/staff-admin` : '';
 
 export default function AdminStaff() {
   const { session } = useAuth();
@@ -41,7 +41,7 @@ export default function AdminStaff() {
     setLoading(false);
   };
 
-  useEffect(() => { if (session) load(); }, [session]);
+  useEffect(() => { if (session) load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [session]);
 
   const handleCreate = async () => {
     if (!form.full_name || !form.email || !form.password) {
