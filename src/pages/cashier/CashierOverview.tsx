@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { DoorOpen, LogOut, Wallet, CalendarCheck, ArrowRight, Clock, BedDouble } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { useRealtimeTable } from '@/lib/useRealtime';
 import { formatEtb, formatDate, todayISO } from '@/lib/format';
 import { StatusBadge, PaymentBadge } from '@/components/Badges';
 import { StatCard, StatSkeleton, PageTitle, ErrorState } from '@/components/ui';
@@ -15,9 +16,8 @@ export default function CashierOverview() {
 
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
+  const load = useCallback(async () => {
+    try {
       const today = todayISO();
       const [{ data: arr }, { data: dep }, { data: inHouse }, { data: paidToday }] = await Promise.all([
         supabase.from('bookings').select('*, room:rooms(id,name,category)').eq('check_in', today).neq('status', 'cancelled').order('created_at', { ascending: false }),
@@ -29,10 +29,12 @@ export default function CashierOverview() {
       setStats({ arrivals: arr?.length ?? 0, departures: dep?.length ?? 0, inHouse: inHouse?.length ?? 0, collectedToday });
       setArrivals(arr ?? []);
       setDepartures(dep ?? []);
-      } catch { setError(true); }
-      setLoading(false);
-    })();
+    } catch { setError(true); }
+    setLoading(false);
   }, []);
+
+  useEffect(() => { load(); }, [load]);
+  useRealtimeTable('bookings', load);
 
   if (loading) return (
     <div>

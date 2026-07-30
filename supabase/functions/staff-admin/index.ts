@@ -82,6 +82,55 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // ---------- bootstrap_cashier ----------
+    // Creates the initial cashier@bcapital.com account if no cashier exists yet.
+    // Idempotent + safe, callable without auth (demo seeding only).
+    if (body.action === "bootstrap_cashier") {
+      const { data: existing } = await admin
+        .from("staff_profiles")
+        .select("id, email")
+        .eq("role", "cashier")
+        .maybeSingle();
+
+      if (existing) {
+        return new Response(
+          JSON.stringify({ message: "Cashier already exists", email: existing.email, exists: true }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const email = (body.email || "cashier@bcapital.com").toLowerCase().trim();
+      const password = body.password || "cashier123";
+      const full_name = body.full_name || "Front Desk Cashier";
+
+      const { data: created, error } = await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { full_name, role: "cashier" },
+      });
+
+      if (error) {
+        return new Response(
+          JSON.stringify({ error: error.message }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      await admin.from("staff_profiles").insert({
+        id: created.user.id,
+        email,
+        full_name,
+        role: "cashier",
+        is_active: true,
+      });
+
+      return new Response(
+        JSON.stringify({ message: "Cashier account created", email }),
+        { status: 201, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // ---------- For all other actions, require an authenticated staff caller ----------
     const authHeader = req.headers.get("Authorization") || "";
     const token = authHeader.replace("Bearer ", "");

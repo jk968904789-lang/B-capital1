@@ -37,8 +37,8 @@ const FAQS = [
     a: 'Each room lists its maximum capacity. Standard rooms accommodate up to 2 guests, Deluxe and Executive up to 3, and our Suites up to 4. You will select the number of guests when booking.',
   },
   {
-    q: 'Does B Capital have a gym, pool, or spa?',
-    a: 'B Capital is a focused room-booking hotel. We do not operate a gym, swimming pool, spa, club, or bar. Our emphasis is on a calm, restful, and comfortable stay.',
+    q: 'What amenities does B Capital offer?',
+    a: 'B Capital is a focused room-booking hotel. Our emphasis is on a calm, restful, and comfortable stay, with thoughtfully designed rooms and an on-site restaurant. We do not operate a gym, swimming pool, spa, club, or bar.',
   },
   {
     q: 'Where is B Capital located?',

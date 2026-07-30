@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { BedDouble, CalendarCheck, Users, Wallet, TrendingUp, ArrowRight, DoorOpen, Clock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useRealtimeTable } from '@/lib/useRealtime';
 import { formatEtb, formatDate, todayISO } from '@/lib/format';
 import { StatusBadge, PaymentBadge } from '@/components/Badges';
 import { StatCard, StatSkeleton, PageTitle, ErrorState } from '@/components/ui';
@@ -14,30 +15,33 @@ export default function AdminOverview() {
   const [recent, setRecent] = useState<Booking[]>([]);
   const [arrivals, setArrivals] = useState<Booking[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const today = todayISO();
-        const [{ count: rooms }, { count: avail }, { count: bookings }, { count: customers }, { data: allBookings }, { data: paid }, { count: occupied }, { data: todayArrivals }] = await Promise.all([
-          supabase.from('rooms').select('*', { count: 'exact', head: true }),
-          supabase.from('rooms').select('*', { count: 'exact', head: true }).eq('is_available', true),
-          supabase.from('bookings').select('*', { count: 'exact', head: true }).neq('status', 'cancelled'),
-          supabase.from('customer_profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('bookings').select('*, room:rooms(id,name,category)').order('created_at', { ascending: false }).limit(5),
-          supabase.from('bookings').select('total_amount').eq('payment_status', 'paid'),
-          supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'checked_in'),
-          supabase.from('bookings').select('*, room:rooms(id,name,category)').eq('check_in', today).neq('status', 'cancelled').order('created_at', { ascending: false }),
-        ]);
-        const revenue = (paid ?? []).reduce((s, b) => s + Number(b.total_amount), 0);
-        setStats({ totalRooms: rooms ?? 0, availableRooms: avail ?? 0, totalBookings: bookings ?? 0, activeBookings: occupied ?? 0, customers: customers ?? 0, revenue, occupancy: (rooms ?? 0) > 0 ? Math.round(((occupied ?? 0) / (rooms ?? 1)) * 100) : 0 });
-        setRecent(allBookings ?? []);
-        setArrivals(todayArrivals ?? []);
-      } catch {
-        setError(true);
-      }
-      setLoading(false);
-    })();
+  const load = useCallback(async () => {
+    try {
+      const today = todayISO();
+      const [{ count: rooms }, { count: avail }, { count: bookings }, { count: customers }, { data: allBookings }, { data: paid }, { count: occupied }, { data: todayArrivals }] = await Promise.all([
+        supabase.from('rooms').select('*', { count: 'exact', head: true }),
+        supabase.from('rooms').select('*', { count: 'exact', head: true }).eq('is_available', true),
+        supabase.from('bookings').select('*', { count: 'exact', head: true }).neq('status', 'cancelled'),
+        supabase.from('customer_profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('bookings').select('*, room:rooms(id,name,category)').order('created_at', { ascending: false }).limit(5),
+        supabase.from('bookings').select('total_amount').eq('payment_status', 'paid'),
+        supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'checked_in'),
+        supabase.from('bookings').select('*, room:rooms(id,name,category)').eq('check_in', today).neq('status', 'cancelled').order('created_at', { ascending: false }),
+      ]);
+      const revenue = (paid ?? []).reduce((s, b) => s + Number(b.total_amount), 0);
+      setStats({ totalRooms: rooms ?? 0, availableRooms: avail ?? 0, totalBookings: bookings ?? 0, activeBookings: occupied ?? 0, customers: customers ?? 0, revenue, occupancy: (rooms ?? 0) > 0 ? Math.round(((occupied ?? 0) / (rooms ?? 1)) * 100) : 0 });
+      setRecent(allBookings ?? []);
+      setArrivals(todayArrivals ?? []);
+    } catch {
+      setError(true);
+    }
+    setLoading(false);
   }, []);
+
+  useEffect(() => { load(); }, [load]);
+  useRealtimeTable('bookings', load);
+  useRealtimeTable('rooms', load);
+  useRealtimeTable('customer_profiles', load);
 
   if (loading) return (
     <div>

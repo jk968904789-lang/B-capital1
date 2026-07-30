@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/lib/auth';
+import { supabaseConfigured } from '@/lib/supabase';
 import ScrollToTop from '@/components/ScrollToTop';
 import PublicLayout from '@/components/PublicLayout';
 import StaffShell from '@/components/StaffShell';
@@ -66,6 +67,19 @@ const cashierNav = [
 
 function AppRoutes() {
   const { loading } = useAuth();
+
+  if (!supabaseConfigured) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-ink-50 px-6">
+        <div className="max-w-md text-center">
+          <h1 className="font-serif text-2xl font-semibold text-ink-900">B Capital</h1>
+          <p className="mt-3 text-sm text-ink-500">
+            The site is temporarily unavailable. Please try again in a moment.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

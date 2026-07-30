@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Search, DoorOpen, LogOut, Printer, Eye, X, Check, Loader2, Banknote,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import type { Booking, BookingStatus, PaymentStatus } from '@/types';
+import { useRealtimeTable } from '@/lib/useRealtime';
+import type { Booking, BookingStatus } from '@/types';
 import { STATUS_LABELS } from '@/types';
-import { formatEtb, formatDate, todayISO } from '@/lib/format';
+import { formatEtb, formatDate } from '@/lib/format';
 import { StatusBadge, PaymentBadge } from '@/components/Badges';
 import { PageTitle, EmptyState, Toast } from '@/components/ui';
 import { BookingDetailsModal } from '@/components/BookingDetailsModal';
@@ -22,7 +23,7 @@ export default function CashierOperations() {
   const [busy, setBusy] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     supabase
       .from('bookings')
@@ -33,9 +34,10 @@ export default function CashierOperations() {
         setBookings(data ?? []);
         setLoading(false);
       });
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
+  useRealtimeTable('bookings', load);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });

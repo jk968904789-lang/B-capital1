@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Printer, Calendar, TrendingUp, Banknote, DoorOpen, LogOut } from 'lucide-react';
+import { Printer, Calendar, Banknote, DoorOpen, LogOut } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Booking } from '@/types';
 import { formatEtb, formatDate, todayISO } from '@/lib/format';

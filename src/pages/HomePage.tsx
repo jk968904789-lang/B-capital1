@@ -238,7 +238,7 @@ export default function HomePage() {
               Dire Dawa is Ethiopia's second city — a vibrant crossroads of culture and
               commerce. B Capital sits conveniently on Bole Road, moments from the city's
               commercial center and the railway heritage quarter, with easy access to
-              Awash and Addis Ababa.
+              Awash and the surrounding region.
             </p>
             <ul className="mt-8 space-y-4">
               <LocationRow icon={MapPin} title="Bole Road, Kebele 04" sub="Dire Dawa, Ethiopia" />

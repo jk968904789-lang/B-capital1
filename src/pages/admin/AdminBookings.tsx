@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   CalendarCheck, Search, Eye, X, Check, DoorOpen, LogOut, Banknote,
   Ban, Loader2,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useRealtimeTable } from '@/lib/useRealtime';
 import type { Booking, BookingStatus } from '@/types';
 import { STATUS_LABELS } from '@/types';
 import { formatEtb, formatDate } from '@/lib/format';
@@ -22,7 +23,7 @@ export default function AdminBookings() {
   const [busy, setBusy] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     supabase
       .from('bookings')
@@ -33,9 +34,10 @@ export default function AdminBookings() {
         setBookings(data ?? []);
         setLoading(false);
       });
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
+  useRealtimeTable('bookings', load);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });

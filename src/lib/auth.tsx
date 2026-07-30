@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+import { supabase, supabaseConfigured } from './supabase';
 import type { StaffRole } from '../types';
 
 type AppRole = 'customer' | 'admin' | 'cashier';
@@ -55,6 +55,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    if (!supabaseConfigured) {
+      setLoading(false);
+      return;
+    }
     let mounted = true;
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
