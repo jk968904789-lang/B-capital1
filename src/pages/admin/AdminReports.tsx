@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Calendar, TrendingUp, BookOpen, DoorOpen, Printer, Loader2 } from 'lucide-react';
+import { Calendar, TrendingUp, BookOpen, DoorOpen, Printer } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Booking } from '@/types';
 import { STATUS_LABELS } from '@/types';
-import { formatEtb, formatEtbPlain, formatDate, todayISO, addDays } from '@/lib/format';
+import { formatEtb, formatDate, todayISO, addDays } from '@/lib/format';
 import { StatusBadge, PaymentBadge } from '@/components/Badges';
 import { PageTitle, StatCard, LoadingState, ErrorState } from '@/components/ui';
 

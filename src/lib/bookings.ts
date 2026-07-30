@@ -120,6 +120,9 @@ export async function createCustomerBooking(
     .single();
 
   if (bookingErr) {
+    if (bookingErr.code === '23P01') {
+      return { success: false, error: 'This room was just booked for those dates. Please try different dates.' };
+    }
     return { success: false, error: bookingErr.message };
   }
   return { success: true, booking: booking as Booking };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   CalendarCheck, Search, Eye, X, Check, DoorOpen, LogOut, Banknote,
-  Ban, Loader2, Pencil,
+  Ban, Loader2,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Booking, BookingStatus } from '@/types';
