@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { supabaseConfigured } from '@/lib/supabase';
 import ScrollToTop from '@/components/ScrollToTop';

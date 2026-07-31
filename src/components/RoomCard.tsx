@@ -9,7 +9,7 @@ interface RoomCardProps {
   index?: number;
 }
 
-export default function RoomCard({ room, index = 0 }: RoomCardProps) {
+export default function RoomCard({ room }: RoomCardProps) {
   const cover = room.image_urls[0] ?? 'https://images.pexels.com/photos/6434592/pexels-photo-6434592.jpeg?auto=compress&cs=tinysrgb&w=800';
   return (
     <Link

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Users, Search, Mail, Phone, Calendar, BookOpen, Eye, X } from 'lucide-react';
+import { Users, Search, Mail, Phone, BookOpen, Eye, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { formatDate, formatEtb } from '@/lib/format';
 import { StatusBadge } from '@/components/Badges';

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, Loader2, BedDouble, Search, ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, BedDouble, Search, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Room, RoomCategory } from '@/types';
 import { CATEGORY_LABELS, CATEGORY_ORDER } from '@/types';
 import { formatEtb } from '@/lib/format';
-import { PageTitle, LoadingState, EmptyState, Modal, ConfirmDialog, Toast } from '@/components/ui';
+import { PageTitle, EmptyState, Modal, ConfirmDialog, Toast } from '@/components/ui';
 
 const DEFAULT_AMENITIES = [
   'Free Wi-Fi', 'Air Conditioning', 'Smart TV', 'En-suite Bathroom', 'Work Desk',
